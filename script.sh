@@ -107,6 +107,18 @@ fi
     echo "Configuração concluída! Usuário '$pg_user' e banco de dados '$pg_db' criados."
 }
 
+##instalação do Docker
+
+    install_docker() {
+    echo -e "\033[1;34mIniciando a instalação do Docker...\033[0m"
+    LATEST_COMPOSE_VERSION=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep tag_name | cut -d '"' -f 4)
+    sudo curl -L "https://github.com/docker/compose/releases/download/$LATEST_COMPOSE_VERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
+    docker-compose --version
+    echo -e "\033[1;32mDocker Compose instalado com sucesso.\033[0m"
+    }
+
+
 
 # Menu interativo
 while true; do
@@ -140,7 +152,7 @@ while true; do
             install_ruby_rails
             ;;
         6)
-            install_docker_compose
+            install_docker
             ;;
         7)
             install_composer
