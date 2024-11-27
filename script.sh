@@ -13,7 +13,7 @@ fi
   install_php() {
     echo -e "\033[1;34mIniciando a instalação do PHP e Laravel...\033[0m"
     
-     # Instalar Apache
+
     echo -e "\033[1;34mInstalando Apache...\033[0m"
     if ! dnf install -y httpd; then
         echo -e "\033[1;31mErro ao instalar o Apache.\033[0m"
@@ -35,7 +35,7 @@ fi
    
    systemctl restart httpd
 
-    # Instalar o Composer
+
     echo -e "\033[1;34mInstalando o Composer...\033[0m"
     if ! curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer; then
         echo -e "\033[1;31mErro ao instalar o Composer.\033[0m"
@@ -44,14 +44,14 @@ fi
 
     echo -e "\033[1;32mComposer instalado com sucesso.\033[0m"
 
-    # Instalar Laravel globalmente com Composer
+
     echo -e "\033[1;34mInstalando Laravel globalmente...\033[0m"
     if ! composer global require laravel/installer; then
         echo -e "\033[1;31mErro ao instalar o Laravel.\033[0m"
         exit 1
     fi
 
-     # Atualizar PATH para o Laravel
+
     export PATH="$HOME/.config/composer/vendor/bin:$PATH"
     echo 'export PATH="$HOME/.config/composer/vendor/bin:$PATH"' >> ~/.bashrc
 
@@ -107,8 +107,28 @@ fi
     echo "Configuração concluída! Usuário '$pg_user' e banco de dados '$pg_db' criados."
 }
 
+# Função para instalar docker
+install_docker() {
+  echo "Instalando Docker..."
+ 
+  if [[ "$(cat /etc/os-release)" =~ "CentOS" || "$(cat /etc/os-release)" =~ "RHEL" ]]; then
 
-# Menu interativo
+    dnf install -y docker.io
+  else
+ 
+    apt update
+    apt install -y docker.io
+  fi
+
+  usermod -aG docker $USER
+
+  systemctl start docker
+  systemctl enable docker
+
+  echo "Docker instalado com sucesso!"
+}
+
+
 while true; do
     echo "----------------------------------------------------"
     echo "Selecione o que deseja instalar:"
